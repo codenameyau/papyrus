@@ -1,7 +1,12 @@
 # papyrus
 
-Zero dependency logger used to store network requests.
+## Docs
+See [swagger-docs.yml](https://raw.githubusercontent.com/codenameyau/papyrus/master/swagger-docs.yml) for documentation.
 
+## Installation
+Install nodemon globally and run local server.
 
-## docs
-See swagger-docs.yml for documentation.
+```
+npm i -g nodemon
+nodemon server.js
+```
