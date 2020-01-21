@@ -10,3 +10,6 @@ Install nodemon globally and run local server.
 npm i -g nodemon
 nodemon server.js
 ```
+
+## TODO
+Consider file logging with either unix stdout or use node fs.

@@ -11,7 +11,6 @@ const time = require("./utils/time");
 /******************************************************
  * CONFIG
  ******************************************************/
-
 const PORT = process.env.PORT || 9001;
 const LOG_DIR = process.env.LOG_DIR || "logs";
 const LOG_SIZE_LIMIT = process.env.LOG_SIZE_LIMIT || "10mb";
@@ -88,6 +87,7 @@ app.get("/v0/log", function(req, res) {
     return res.sendStatus(200);
   }
 
+  // consider using fs writefile vs stdout
   logHandler(req);
   return res.sendStatus(201);
 });
