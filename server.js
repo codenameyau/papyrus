@@ -15,6 +15,7 @@ const time = require("./utils/time");
 const PORT = process.env.PORT || 9001;
 const LOG_DIR = process.env.LOG_DIR || "logs";
 const LOG_SIZE_LIMIT = process.env.LOG_SIZE_LIMIT || "10mb";
+const SHOULD_WRITE = process.env.SHOULD_WRITE || false;
 
 express.text({
   limit: LOG_SIZE_LIMIT
@@ -33,12 +34,19 @@ function isBase64Encoded(str) {
 
 function getFilename(req) {
   const date = time.getDate();
-  const namespace =
-    (req.query && req.query.namespace) ||
-    (req.body && req.body.namespace) ||
+
+  const filename =
+    (req.query && req.query.filename) ||
+    (req.body && req.body.filename) ||
     "";
 
-  return namespace ? `${namespace}.${date}` : date;
+  if (!filename) {
+    return date;
+  }
+
+  const splitFilename = filename.split('/');
+  const safeFilename = splitFilename[splitFilename.length - 1];
+  return `${safeFilename}.${date}`;
 }
 
 function addLogProperty(obj, propName, prop) {
@@ -61,6 +69,13 @@ function createLog(req) {
   return log;
 }
 
+function logHandler(req) {
+  const filename = getFilename(req);
+  const log = createLog(req);
+  console.log(`\n[+] Log: ${time.getTimestamp()}`);
+  console.log(JSON.stringify(log, null, 2));
+}
+
 /******************************************************
  * ROUTES
  ******************************************************/
@@ -69,22 +84,21 @@ app.get("/", function(req, res) {
 });
 
 app.get("/v0/log", function(req, res) {
-  const filename = getFilename(req);
-  const query = req.query;
-
-  if (!Object.keys(query)) {
+  if (!Object.keys(req.query)) {
     return res.sendStatus(200);
   }
 
-  const log = createLog(req);
-  console.log(`\n[+] Log: ${time.getTimestamp()}`);
-  console.log(JSON.stringify(log, null, 2));
+  logHandler(req);
   return res.sendStatus(201);
 });
 
 app.post("/v0/log", function(req, res) {
-  console.log(req);
-  res.sendStatus(200);
+  if (!Object.keys(req.body)) {
+    return res.sendStatus(200);
+  }
+
+  logHandler(req);
+  return res.sendStatus(201);
 });
 
 /******************************************************
