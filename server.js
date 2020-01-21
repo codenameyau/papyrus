@@ -1,11 +1,17 @@
 const express = require('express')
 const cors = require('cors')
+const path = require('path');
+require('dotenv').config()
+
 const ip = require('./utils/ip');
+const time = require('./utils/time');
 
 /******************************************************
  * CONFIG
  ******************************************************/
-const PORT = 9001;
+
+const PORT = process.env.PORT || 9001;
+const LOG_DIR = process.env.LOG_DIR || 'logs';
 
 express.text({
   limit: '10mb'
@@ -29,7 +35,10 @@ app.get('/', function (req, res) {
 })
 
 app.get('/v0/log', function (req, res) {
-  console.log(req);
+  console.log(req.query);
+
+  const namespace = req.query.namespace || time.getDate();
+  console.log(namespace);
   res.sendStatus(200)
 })
 
@@ -42,7 +51,7 @@ app.post('/v0/log', function (req, res) {
  * SERVER
  ******************************************************/
 app.listen(PORT, () => {
-  console.log(`\nServer started on: `)
+  console.log(`\n[+] Server started on: `)
   console.log(`http://localhost:${PORT}`);
 
   const localIp = ip.getLocalIp();
