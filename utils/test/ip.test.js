@@ -1,6 +1,11 @@
 const ip = require('../ip');
 
-describe('getLocalIp', () => {
+describe('parseNetworkInterfaces', () => {
+  it('should return undefined for missing en0', () => {
+    const mockNetworkInterfaces = {};
+    expect(ip.parseNetworkInterfaces(mockNetworkInterfaces)).toBe(undefined)
+  });
+
   it('should return local ip address for mac', () => {
     const mockNetworkInterfaces = {
       lo0: [
@@ -103,6 +108,6 @@ describe('getLocalIp', () => {
       ]
     };
 
-    expect(ip.getLocalIp(mockNetworkInterfaces)).toBe('192.168.0.13')
+    expect(ip.parseNetworkInterfaces(mockNetworkInterfaces)).toBe('192.168.0.13')
   })
 });
