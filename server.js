@@ -1,5 +1,6 @@
 const express = require('express')
 const cors = require('cors')
+const ip = require('./utils/ip');
 
 /******************************************************
  * CONFIG
@@ -41,5 +42,11 @@ app.post('/v0/log', function (req, res) {
  * SERVER
  ******************************************************/
 app.listen(PORT, () => {
-  console.log(`Server listening on http://localhost:${PORT}`)
+  console.log(`\nServer started on: `)
+  console.log(`http://localhost:${PORT}`);
+
+  const localIp = ip.getLocalIp();
+  if (localIp) {
+    console.log(`http://${localIp}:${PORT}`);
+  }
 })
