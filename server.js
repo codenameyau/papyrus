@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
-const path = require("path");
 const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
 
 require("dotenv").config();
 
@@ -23,6 +23,7 @@ express.text({
 const app = express();
 app.use(cors());
 app.use(cookieParser());
+app.use(bodyParser());
 
 /******************************************************
  * UTILS
@@ -55,7 +56,7 @@ function addLogProperty(obj, propName, prop) {
 }
 
 function createLog(req) {
-  const reqKeys = ['headers', 'cookies', 'query', 'body'];
+  const reqKeys = ['method', 'headers', 'cookies', 'query', 'body'];
 
   const log = reqKeys.reduce((acc, key) => {
     const value = req[key];
@@ -83,22 +84,13 @@ app.get("/", function(req, res) {
 });
 
 app.get("/v0/log", function(req, res) {
-  if (!Object.keys(req.query)) {
-    return res.sendStatus(200);
-  }
-
-  // consider using fs writefile vs stdout
   logHandler(req);
-  return res.sendStatus(201);
+  return res.sendStatus(200);
 });
 
 app.post("/v0/log", function(req, res) {
-  if (!Object.keys(req.body)) {
-    return res.sendStatus(200);
-  }
-
   logHandler(req);
-  return res.sendStatus(201);
+  return res.sendStatus(200);
 });
 
 /******************************************************
